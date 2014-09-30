@@ -96,7 +96,7 @@ function main() {
 				adGroupAddNegative(row.AdGroupId, normalisedKeyword);
 
 			if (CAMPAIGN_LEVEL)
-				adGroupAddNegative(row.CampaignId, normalisedKeyword);
+				campaignAddNegative(row.CampaignId, normalisedKeyword);
 
 		}
 
