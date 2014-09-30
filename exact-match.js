@@ -72,8 +72,8 @@ function main() {
 	report = AdWordsApp.report(
 		'SELECT Query, AdGroupId, CampaignId, KeywordId, KeywordTextMatchingQuery, Impressions, MatchType ' +
 		'FROM SEARCH_QUERY_PERFORMANCE_REPORT ' +
-		'WHERE CampaignName CONTAINS_IGNORE_CASE "' + CAMPAIGN_FILTERS + '" ' +
-		'AND AdGroupName CONTAINS_IGNORE_CASE  "' + AD_GROUP_FILTERS + '" ' +
+		//'WHERE CampaignName CONTAINS_IGNORE_CASE "' + CAMPAIGN_FILTERS + '" ' +
+		//'AND AdGroupName CONTAINS_IGNORE_CASE  "' + AD_GROUP_FILTERS + '" ' +
 		'DURING THIS_MONTH');
 	iterator = report.rows();
 
@@ -83,16 +83,20 @@ function main() {
 		var keywordIsQuery = row.KeywordTextMatchingQuery === row.Query;
 		var isCloseVariant = row.MatchType.toLowerCase().indexOf('exact (close variant)') >= 0;
 		var isExactMatch = exactKeywordCollection.indexOf(row.KeywordId + '#' + row.AdGroupId) >= 0;
-      
+	  
 		// If the row is a keyword that is not the same as the search query and of match type
 		// 'close variant', then add it to the list of keywords to exclude.
 		if (!keywordIsQuery && isCloseVariant && !isExactMatch) {
+		  
+		  var normalisedKeyword = row.KeywordTextMatchingQuery.replace(/[^\w\s]/gi, '');
+		  
+		  Logger.log('Found variant for [' + row.Query + ']: ' + normalisedKeyword);
 
 			if (AD_GROUP_LEVEL)
-				adGroupAddNegative(row.AdGroupId, row.Query);
+				adGroupAddNegative(row.AdGroupId, normalisedKeyword);
 
 			if (CAMPAIGN_LEVEL)
-				adGroupAddNegative(row.CampaignId, row.Query);
+				adGroupAddNegative(row.CampaignId, normalisedKeyword);
 
 		}
 
