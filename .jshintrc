@@ -1,0 +1,6 @@
+{
+	"strict": false,
+	"laxcomma": true,
+	"unused": false,
+	"predef": [ "AdWordsApp", "Logger" ]
+}
